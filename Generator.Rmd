@@ -1,0 +1,23 @@
+---
+title: "Generator"
+output: html_document
+---
+
+```{r}
+
+library("xml2")
+
+recettes <- read_html(
+  
+"https://www.cuisineaz.com/"
+
+)
+
+
+library("rvest")
+library("magrittr")
+boeuf <- recettes %>% 
+    html_nodes(".show-for-medium") %>%
+    html_text()
+
+```
