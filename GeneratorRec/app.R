@@ -4,17 +4,17 @@ library(stringr)
 library(rebus)     
 library(lubridate)
 
-get_recipes = function(){
-  url <- "https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=15"
-  webpage <- read_html(url)
-  
-  urls <- recipes_on_webpage %>% 
-    html_nodes ("div.searchresult a") %>% 
-    html_attr("href")
-  read_html(urls)
-  
-}
 
+webpage_recipes <- read_html("https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=15")  
+urls <- html_nodes (webpage_recipes, ".fixed-recipe-card__h3 a") %>%
+        html_attr("href")
+  
+  n = length(recipes)
+  recipes = rep(NA, n)
+  ingredients = rep(NA, n)
+  Images = rep(NA, n)
+  Time = rep(NA, n)
+  Calories = rep(NA, n)
 
 
 
