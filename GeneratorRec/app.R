@@ -1,66 +1,82 @@
+#EXTRACTION OF RECIPES PARAMETERS
 library(rvest)
 library(tidyverse)  
 library(stringr)   
 library(rebus)     
 library(lubridate)
 
-titles <-c()
-recipe <- c()
-ingredients <-c()
-image <-c()
-cooking.time <-c()
-calories <-c()
-
-webpage_recipes1 <- read_html("https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=1")  
-urls1 <- html_nodes (webpage_recipes1, ".fixed-recipe-card__h3 a") %>%
-        html_attr("href")
-
-webpage_recipes2 <- read_html("https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=2")  
-urls2 <- html_nodes (webpage_recipes2, ".fixed-recipe-card__h3 a") %>%
-  html_attr("href")
-
-webpage_recipes3 <- read_html("https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=3")  
-urls3 <- html_nodes (webpage_recipes3, ".fixed-recipe-card__h3 a") %>%
-  html_attr("href")
-
-Info1 = c(urls1)
-Info2 = c(urls2)
-c(Info1,Info2)
-
-
-Recipe_dataframe <- data.frame (
-  WebPg=urls1
-)
-
-Recipe_dataframe <- append(Recipe_dataframe, data.frame(WebPg=urls2))
-
-
-for (i in Recipe_dataframe$WebPg){
-  Recipe_webpg <-read_html(i)
-  title <- Recipe_webpg %>%
-    html_node("Title") %>%
-  html_text()
-  titles <-append(titles, title)
+# Loading urls for all recipe pages. Urls is initialized as empty vector to prevent repeated entries across runs
+urls <- c()
+for (t in 1:2) {
+  webpage_recipes <-read_html(paste0("https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=", t))
+  urlst <-html_nodes (webpage_recipes, ".fixed-recipe-card__h3 a") %>%
+    html_attr("href")
+  urls <- append(urls, urlst)
 }
 
+# Creates the dataframe for all recipes
+Recipe_dataframe <- c()
+Recipe_dataframe <- data.frame (
+  WebPg=urls
+)
+
+# Creates vectors for recipe parameters to be scraped
+titles <-c()
+recipes <- c()
+ingredients <-c()
+cooking_time <-c()
+calories <-c()
+
+# Scrapes the recipe parameters
+for (webpg in Recipe_dataframe$WebPg){
+  
+  # Loads the page source code
+  Recipe_webpg <-read_html(webpg)
+  
+  # Scrapes the Title
+  title <- Recipe_webpg %>%
+    html_node("#recipe-main-content") %>%
+  html_text()
+  titles <-append(titles, title) 
+    
+  # Scrapes the recipe instructions
+  recipe <- Recipe_webpg %>%
+    html_node (".recipe-directions__list")%>%
+    html_text()
+  recipe_clean <- str_squish(recipe)
+  recipes <-append(recipes, recipe_clean)
+
+  # Scrapes the ingredients
+  ingredient  <- Recipe_webpg %>%
+    html_nodes (".checkList__line") %>%
+    html_text()
+  ingredient_clean <-str_squish(ingredient)
+  ingredients <-append(ingredients, paste(head(ingredient_clean, -3), collapse=";"))
+  
+  # Scrapes the calories
+  calorie <- Recipe_webpg %>%
+    html_node(".calorie-count") %>%
+    html_text()
+  calories <-append(calories, calorie) 
+  
+  # Scrapes the cooking time
+  cooking <- Recipe_webpg %>%
+    html_node(".ready-in-time") %>%
+    html_text()
+  cooking_time <-append(cooking_time, cooking) 
+}
+
+
 Recipe_dataframe$Title <- titles
+Recipe_dataframe$Recipe <- recipes
+Recipe_dataframe$Ingredients <- ingredients
+Recipe_dataframe$Calories <-calories
+Recipe_dataframe$cooking_time <- cooking_time
 
   
-  n = length(recipes)
-  recipes = rep(NA, n)
-  ingredients = rep(NA, n)
-  Images = rep(NA, n)
-  Time = rep(NA, n)
-  Calories = rep(NA, n)
 
 
 
 
-TITLE_Recipes_data_html <- html_nodes(webpage,".fixed-recipe-card__h3")
-
-TITLE_data <- html_text( Recipes_data_html )
 
 
-INSTRUCTIONS_data_html <- html_nodes(webpage, "")
-
-INSTRUCTIONS_data <- html_text(INSTRUCTIONS_data_html)
