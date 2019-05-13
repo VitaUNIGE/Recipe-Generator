@@ -74,48 +74,51 @@ Recipe_dataframe$Calories <-calories
 Recipe_dataframe$cooking_time <- cooking_time
 
   
-
-
-
-
-
-research = function(ing1,ing2){
+titles_indices1 = grep("Chicken", titles, ignore.case = TRUE)
+titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
+titles_indices3 = grep("Thuna", titles, ignore.case = TRUE)
+titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
+chicken = c()
+salmon = c()
   
+for (i in 1:length(titles_indices1)){
   
-  if(ing1 == TRUE){
-    
-    titles_indices = grep("Chicken", titles, ignore.case = TRUE)
-    
-    for (i in 1:length(titles_indices)){
-      
-      x[i] = c(titles[titles_indices[i]])
-      
-      
-      
-    }
-    x
-    
-  }
+  chicken[i] = c(titles[titles_indices1[i]])
   
-  if(ing2 == TRUE){
-    
-    titles_indicesy = grep("Salmon", titles, ignore.case = TRUE)
-    
-    for (i in 1:length(titles_indices)){
-      
-      y[i] = c(titles[titles_indicesy[i]])
-      
-      
-      
-    }
-    y
-    
-  }
   
   
   
 }
 
+for (i in 1:length(titles_indices2)){
+  
+  salmon[i] = c(titles[titles_indices2[i]])
+  
+  
+  
+  
+}
+for (i in 1:length(titles_indices3)){
+  
+  thuna[i] = c(titles[titles_indices3[i]])
+  
+  
+  
+  
+}
+for (i in 1:length(titles_indices4)){
+  
+  shrimp[i] = c(titles[titles_indices4[i]])
+  
+  
+  
+  
+}
+
+
+
+  
+  
 
 
 
@@ -130,23 +133,14 @@ ui = fluidPage(
   
   titlePanel("Recipe Generator"),
   
-  
-  # Sidebar 
-  
-  sidebarLayout(
-    sidebarPanel(
-      
-      
-      
-    checkboxInput("ing1", "Chicken", value = FALSE),
-    checkboxInput("ing2", "Salmon", value = FALSE),
-    checkboxInput("ing3", "Pork", value = FALSE)
-    ),
+ 
       
       
     
     mainPanel(
-      textOutput("Recipes")
+      uiOutput("Titles"),
+      uiOutput("Recipe"),
+      verbatimTextOutput("Recipe2")
       
       
       
@@ -154,7 +148,7 @@ ui = fluidPage(
     )
   )
 
-)
+
 
 
 
@@ -168,12 +162,38 @@ ui = fluidPage(
 server = function(input, output){
   
   
-  output$Recipes = renderText({
-      ing1 = input$ing1
-      ing2 = input$ing2
-research(ing1, ing2)
-  
+  output$Titles = renderUI({
+    
+    
+      "selectInput" = selectInput("ing1","Ingredient", choices = c("Chicken", "Salmon"))
+
+      
+      
+   
+    
 })
+  
+  output$Recipe = renderUI({
+    
+   
+  "selectInput2" = selectInput("chicken", "Recipe", choices = c("Test" = "Chicken") )
+    
+  
+  
+  })
+  
+  output$Recipe2 = renderPrint({
+    
+
+    
+
+  str(input$Recipe2)
+    
+    
+  })
+
+  
+  
 }
 
 shinyApp(ui = ui, server = server)
