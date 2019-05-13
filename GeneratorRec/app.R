@@ -79,4 +79,102 @@ Recipe_dataframe$cooking_time <- cooking_time
 
 
 
+research = function(ing1,ing2){
+  
+  
+  if(ing1 == TRUE){
+    
+    titles_indices = grep("Chicken", titles, ignore.case = TRUE)
+    
+    for (i in 1:length(titles_indices)){
+      
+      x[i] = c(titles[titles_indices[i]])
+      
+      
+      
+    }
+    x
+    
+  }
+  
+  if(ing2 == TRUE){
+    
+    titles_indicesy = grep("Salmon", titles, ignore.case = TRUE)
+    
+    for (i in 1:length(titles_indices)){
+      
+      y[i] = c(titles[titles_indicesy[i]])
+      
+      
+      
+    }
+    y
+    
+  }
+  
+  
+  
+}
+
+
+
+
+library(shiny)
+
+
+
+# Frontend
+
+ui = fluidPage(
+  
+  
+  titlePanel("Recipe Generator"),
+  
+  
+  # Sidebar 
+  
+  sidebarLayout(
+    sidebarPanel(
+      
+      
+      
+    checkboxInput("ing1", "Chicken", value = FALSE),
+    checkboxInput("ing2", "Salmon", value = FALSE),
+    checkboxInput("ing3", "Pork", value = FALSE)
+    ),
+      
+      
+    
+    mainPanel(
+      textOutput("Recipes")
+      
+      
+      
+      
+    )
+  )
+
+)
+
+
+
+
+
+
+
+# Server
+
+
+server = function(input, output){
+  
+  
+  output$Recipes = renderText({
+      ing1 = input$ing1
+      ing2 = input$ing2
+research(ing1, ing2)
+  
+})
+}
+
+shinyApp(ui = ui, server = server)
 
