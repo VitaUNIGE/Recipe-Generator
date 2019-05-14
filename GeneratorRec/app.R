@@ -78,6 +78,27 @@ titles_indices1 = grep("Chicken", titles, ignore.case = TRUE)
 titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
 titles_indices3 = grep("Thuna", titles, ignore.case = TRUE)
 titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
+titles_indices5 = grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)
+
+
+pork_frame = matrix(ncol = 5, nrow = length(titles_indices5))
+for(i in 1:length(titles_indices5)){
+  
+  
+  
+  pork_frame[i,1] = ingredients[i]
+  pork_frame[i,2] = recipes[i]
+  pork_frame[i,3] = calories[i]
+  pork_frame[i,4] = cooking_time[i]
+  pork_frame[i,5] = titles[i]
+  
+}
+ 
+  
+  
+  
+  
+  
 
 chicken_r = c()
 salmon_r = c()
@@ -88,7 +109,7 @@ salmon_recipe = c()
 thuna_recipe = c()
 shrimp_recipe = c()
 
-vec_ing = c("Chicken", "Salmon", "Thuna", "Shrimp")
+vec_ing = c("Chicken", "Salmon", "Thuna", "Shrimp", "Pork")
   
 for (i in 1:length(titles_indices1)){
   
@@ -170,6 +191,10 @@ ui = fluidPage(
     conditionalPanel(
       condition = "input.ingredients_ == 'Shrimp'",
       selectInput("shrimprecipe", "Shrimp Recipes", choices = shrimp_r)
+    ),
+    conditionalPanel(
+      condition = "input.ingredients_ == 'Pork'",
+      selectInput("porkrecipe", "Pork Recipes", choices = pork_frame[,5])
     )
     
      
@@ -178,7 +203,8 @@ ui = fluidPage(
      verbatimTextOutput("chickenrecipe"),
     verbatimTextOutput("salmonrecipe"),
     verbatimTextOutput("thunarecipe"),
-    verbatimTextOutput("shrimprecipe")
+    verbatimTextOutput("shrimprecipe"),
+    tableOutput("porkrecipe")
       
   )
 
@@ -207,12 +233,13 @@ server = function(input, output){
       
  chicken_recipe[x]
     }
-    
-    
-    
-    
-   
-  })
+
+      })
+  
+  
+  
+  
+  
   
   output$salmonrecipe = renderText({
     
@@ -224,7 +251,13 @@ server = function(input, output){
       salmon_recipe[x]
     }
     
-  })
+      })
+  
+  
+  
+  
+  
+  
   output$thunarecipe = renderText({
     
 if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
@@ -236,8 +269,14 @@ if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
       thuna_recipe[x]
     }
     } 
-    
-  })
+  
+      })
+  
+  
+  
+  
+  
+  
   output$shrimprecipe = renderText({
     
     
@@ -247,6 +286,22 @@ if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
       
       shrimp_recipe[x]
     }
+    
+      })
+  
+  output$porkrecipe = renderPrint({
+    
+    
+    x = match(input$porkrecipe, pork_frame[,5])
+    
+    if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
+      
+      pork_frame[x,1]
+      pork_frame[x,2]
+      pork_frame[x,3]
+      pork_frame[x,4]
+      }
+    
     
   })
   
