@@ -3,7 +3,7 @@ library(rvest)
 library(tidyverse)  
 library(stringr)   
 library(rebus)     
-library(lubridate)
+
 
 # Loading urls for all recipe pages. Urls is initialized as empty vector to prevent repeated entries across runs
 urls <- c()
@@ -36,16 +36,16 @@ for (webpg in Recipe_dataframe$WebPg){
   # Scrapes the Title
   title <- Recipe_webpg %>%
     html_node("#recipe-main-content") %>%
-  html_text()
+    html_text()
   titles <-append(titles, title) 
-    
+  
   # Scrapes the recipe instructions
   recipe <- Recipe_webpg %>%
     html_node (".recipe-directions__list")%>%
     html_text()
   recipe_clean <- str_squish(recipe)
   recipes <-append(recipes, recipe_clean)
-
+  
   # Scrapes the ingredients
   ingredient  <- Recipe_webpg %>%
     html_nodes (".checkList__line") %>%
@@ -66,21 +66,21 @@ for (webpg in Recipe_dataframe$WebPg){
   cooking_time <-append(cooking_time, cooking) 
 }
 
-
+#Completing the dataframe with all useful elements
 Recipe_dataframe$Title <- titles
 Recipe_dataframe$Recipe <- recipes
 Recipe_dataframe$Ingredients <- ingredients
 Recipe_dataframe$Calories <-calories
 Recipe_dataframe$cooking_time <- cooking_time
 
-  
+#Extracting titles based on keywords  
 titles_indices1 = grep("Chicken", titles, ignore.case = TRUE)
 titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
 titles_indices3 = grep("Thuna", titles, ignore.case = TRUE)
 titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
 titles_indices5 = grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)
 
-
+#Reorganizing all data relating to specific ingredient into a matrix
 pork_frame = matrix(ncol = 5, nrow = length(titles_indices5))
 for(i in 1:length(titles_indices5)){
   
@@ -93,13 +93,12 @@ for(i in 1:length(titles_indices5)){
   pork_frame[i,5] = titles[i]
   
 }
- 
-  
-  
-  
-  
-  
 
+
+
+
+
+#Creating vectors
 chicken_r = c()
 salmon_r = c()
 thuna_r = c()
@@ -110,7 +109,8 @@ thuna_recipe = c()
 shrimp_recipe = c()
 
 vec_ing = c("Chicken", "Salmon", "Thuna", "Shrimp", "Pork")
-  
+
+#Inserting the information into the vectors (i.e titles into chicken_r and recipes into chicken_recipe for example)
 for (i in 1:length(titles_indices1)){
   
   chicken_r[i] = c(titles[titles_indices1[i]])
@@ -149,9 +149,9 @@ for (i in 1:length(titles_indices4)){
 
 
 
-  
-  
 
+
+#CREATING THE APP
 
 
 library(shiny)
@@ -166,19 +166,19 @@ ui = fluidPage(
   titlePanel("Recipe Generator"),
   
   sidebarPanel(
-      
+    
     selectInput("ingredients_", "Ingredient",
                 vec_ing
     ),
-
-      conditionalPanel(
+    
+    conditionalPanel(
       condition = "input.ingredients_ == 'Chicken'",
       selectInput(
         "chickenrecipe", "Chicken Recipes", 
         choices = chicken_r
       )
-
-   
+      
+      
     ),
     conditionalPanel(
       condition = "input.ingredients_ == 'Salmon'",
@@ -197,22 +197,22 @@ ui = fluidPage(
       selectInput("porkrecipe", "Pork Recipes", choices = pork_frame[,5])
     )
     
-     
+    
   ),
   mainPanel(
-     verbatimTextOutput("chickenrecipe"),
+    verbatimTextOutput("chickenrecipe"),
     verbatimTextOutput("salmonrecipe"),
     verbatimTextOutput("thunarecipe"),
     verbatimTextOutput("shrimprecipe"),
     tableOutput("porkrecipe")
-      
+    
   )
-
+  
 )
 
-      
-    
- 
+
+
+
 
 
 
@@ -222,7 +222,7 @@ ui = fluidPage(
 server = function(input, output){
   
   
-
+  
   
   output$chickenrecipe = renderText({
     
@@ -231,10 +231,10 @@ server = function(input, output){
     
     if(input$chickenrecipe == chicken_r[x] && input$ingredients_ == "Chicken"){
       
- chicken_recipe[x]
+      chicken_recipe[x]
     }
-
-      })
+    
+  })
   
   
   
@@ -251,7 +251,7 @@ server = function(input, output){
       salmon_recipe[x]
     }
     
-      })
+  })
   
   
   
@@ -260,17 +260,17 @@ server = function(input, output){
   
   output$thunarecipe = renderText({
     
-if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
-  
-   x = match(input$thunarecipe, thuna_r)
-    
-    if(input$thunarecipe == thuna_r[x] && input$ingredients_ == "Thuna"){
+    if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
       
-      thuna_recipe[x]
-    }
+      x = match(input$thunarecipe, thuna_r)
+      
+      if(input$thunarecipe == thuna_r[x] && input$ingredients_ == "Thuna"){
+        
+        thuna_recipe[x]
+      }
     } 
-  
-      })
+    
+  })
   
   
   
@@ -287,7 +287,7 @@ if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
       shrimp_recipe[x]
     }
     
-      })
+  })
   
   output$porkrecipe = renderPrint({
     
@@ -300,15 +300,15 @@ if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
       pork_frame[x,2]
       pork_frame[x,3]
       pork_frame[x,4]
-      }
+    }
     
     
   })
   
   
-
   
-
+  
+  
   
   
 }
