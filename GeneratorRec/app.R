@@ -78,13 +78,17 @@ titles_indices1 = grep("Chicken", titles, ignore.case = TRUE)
 titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
 titles_indices3 = grep("Thuna", titles, ignore.case = TRUE)
 titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
-chicken = c()
-salmon = c()
+chicken_r = c()
+salmon_r = c()
+chicken_recipe = c()
+salmon_recipe = c()
+
+vec_ing = c("Chicken", "Salmon")
   
 for (i in 1:length(titles_indices1)){
   
-  chicken[i] = c(titles[titles_indices1[i]])
-  
+  chicken_r[i] = c(titles[titles_indices1[i]])
+  chicken_recipe[i] = c(recipes[titles_indices1[i]])
   
   
   
@@ -92,15 +96,15 @@ for (i in 1:length(titles_indices1)){
 
 for (i in 1:length(titles_indices2)){
   
-  salmon[i] = c(titles[titles_indices2[i]])
-  
+  salmon_r[i] = c(titles[titles_indices2[i]])
+  salmon_recipe[i] = c(recipes[titles_indices2[i]])
   
   
   
 }
 for (i in 1:length(titles_indices3)){
   
-  thuna[i] = c(titles[titles_indices3[i]])
+  thuna_r[i] = c(titles[titles_indices3[i]])
   
   
   
@@ -108,7 +112,7 @@ for (i in 1:length(titles_indices3)){
 }
 for (i in 1:length(titles_indices4)){
   
-  shrimp[i] = c(titles[titles_indices4[i]])
+  shrimp_r[i] = c(titles[titles_indices4[i]])
   
   
   
@@ -133,26 +137,38 @@ ui = fluidPage(
   
   titlePanel("Recipe Generator"),
   
- 
+  sidebarPanel(
       
-      
-    
-    mainPanel(
-      uiOutput("Titles"),
-      uiOutput("Recipe"),
-      verbatimTextOutput("Recipe2")
-      
-      
-      
-      
+    selectInput("ingredients_", "Ingredient",
+                vec_ing
+    ),
+
+      conditionalPanel(
+      condition = "input.ingredients_ == 'Chicken'",
+      selectInput(
+        "chickenrecipe", "Chicken Recipes", 
+        choices = chicken_r
+      )
+
+   
+    ),
+    conditionalPanel(
+      condition = "input.ingredients_ == 'Salmon'",
+      selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_r)
     )
+     
+  ),
+  mainPanel(
+     verbatimTextOutput("chickenrecipe"),
+    verbatimTextOutput("salmonrecipe")
+      
   )
 
+)
 
-
-
-
-
+      
+    
+ 
 
 
 
@@ -162,35 +178,41 @@ ui = fluidPage(
 server = function(input, output){
   
   
-  output$Titles = renderUI({
-    
-    
-      "selectInput" = selectInput("ing1","Ingredient", choices = c("Chicken", "Salmon"))
 
+  
+  output$chickenrecipe = renderText({
+    
+    
+    x = match(input$chickenrecipe, chicken_r)
+    
+    if(input$chickenrecipe == chicken_r[x] && input$ingredients_ == "Chicken"){
       
-      
+ chicken_recipe[x]
+    }
+    
+    
+    
+    
    
-    
-})
-  
-  output$Recipe = renderUI({
-    
-   
-  "selectInput2" = selectInput("chicken", "Recipe", choices = c("Test" = "Chicken") )
-    
-  
-  
   })
   
-  output$Recipe2 = renderPrint({
+  output$salmonrecipe = renderText({
     
-
     
-
-  str(input$Recipe2)
+    x = match(input$salmonrecipe, salmon_r)
+    
+    if(input$salmonrecipe == salmon_r[x] && input$ingredients_ == "Salmon"){
+      
+      salmon_recipe[x]
+    }
+    
+    
+    
     
     
   })
+
+  
 
   
   
