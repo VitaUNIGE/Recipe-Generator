@@ -78,12 +78,17 @@ titles_indices1 = grep("Chicken", titles, ignore.case = TRUE)
 titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
 titles_indices3 = grep("Thuna", titles, ignore.case = TRUE)
 titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
+
 chicken_r = c()
 salmon_r = c()
+thuna_r = c()
+shrimp_r = c()
 chicken_recipe = c()
 salmon_recipe = c()
+thuna_recipe = c()
+shrimp_recipe = c()
 
-vec_ing = c("Chicken", "Salmon")
+vec_ing = c("Chicken", "Salmon", "Thuna", "Shrimp")
   
 for (i in 1:length(titles_indices1)){
   
@@ -105,6 +110,7 @@ for (i in 1:length(titles_indices2)){
 for (i in 1:length(titles_indices3)){
   
   thuna_r[i] = c(titles[titles_indices3[i]])
+  thuna_recipe[i] = c(recipes[titles_indices3[i]])
   
   
   
@@ -113,6 +119,7 @@ for (i in 1:length(titles_indices3)){
 for (i in 1:length(titles_indices4)){
   
   shrimp_r[i] = c(titles[titles_indices4[i]])
+  shrimp_recipe[i] = c(recipes[titles_indices4[i]])
   
   
   
@@ -155,12 +162,23 @@ ui = fluidPage(
     conditionalPanel(
       condition = "input.ingredients_ == 'Salmon'",
       selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_r)
+    ),
+    conditionalPanel(
+      condition = "input.ingredients_ == 'Thuna'",
+      selectInput("thunarecipe", "Thuna Recipes", choices = thuna_r)
+    ),
+    conditionalPanel(
+      condition = "input.ingredients_ == 'Shrimp'",
+      selectInput("shrimprecipe", "Shrimp Recipes", choices = shrimp_r)
     )
+    
      
   ),
   mainPanel(
      verbatimTextOutput("chickenrecipe"),
-    verbatimTextOutput("salmonrecipe")
+    verbatimTextOutput("salmonrecipe"),
+    verbatimTextOutput("thunarecipe"),
+    verbatimTextOutput("shrimprecipe")
       
   )
 
@@ -206,11 +224,33 @@ server = function(input, output){
       salmon_recipe[x]
     }
     
+  })
+  output$thunarecipe = renderText({
     
+if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
+  
+   x = match(input$thunarecipe, thuna_r)
     
-    
+    if(input$thunarecipe == thuna_r[x] && input$ingredients_ == "Thuna"){
+      
+      thuna_recipe[x]
+    }
+    } 
     
   })
+  output$shrimprecipe = renderText({
+    
+    
+    x = match(input$shrimprecipe, shrimp_r)
+    
+    if(input$shrimprecipe == shrimp_r[x] && input$ingredients_ == "Shrimp"){
+      
+      shrimp_recipe[x]
+    }
+    
+  })
+  
+  
 
   
 
