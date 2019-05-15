@@ -204,8 +204,10 @@ ui = fluidPage(
     verbatimTextOutput("salmonrecipe"),
     verbatimTextOutput("thunarecipe"),
     verbatimTextOutput("shrimprecipe"),
-    tableOutput("porkrecipe")
-    
+    verbatimTextOutput("porkrecipe_r"),
+    verbatimTextOutput("porkrecipe_i"),
+    verbatimTextOutput("porkrecipe_c"),
+    verbatimTextOutput("porkrecipe_t")
   )
   
 )
@@ -232,6 +234,7 @@ server = function(input, output){
     if(input$chickenrecipe == chicken_r[x] && input$ingredients_ == "Chicken"){
       
       chicken_recipe[x]
+      
     }
     
   })
@@ -289,7 +292,20 @@ server = function(input, output){
     
   })
   
-  output$porkrecipe = renderPrint({
+  output$porkrecipe_r = renderPrint({
+    
+    
+    x = match(input$porkrecipe, pork_frame[,5])
+    
+    if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
+      
+      pork_frame[x,2]
+
+    }
+    
+    
+  })
+  output$porkrecipe_i = renderPrint({
     
     
     x = match(input$porkrecipe, pork_frame[,5])
@@ -297,13 +313,38 @@ server = function(input, output){
     if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
       
       pork_frame[x,1]
-      pork_frame[x,2]
+
+    }
+    
+  })
+  
+  output$porkrecipe_c = renderPrint({
+    
+    
+    x = match(input$porkrecipe, pork_frame[,5])
+    
+    if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
+      
+ 
       pork_frame[x,3]
+    }
+    
+  })
+  
+  output$porkrecipe_t = renderPrint({
+    
+    
+    x = match(input$porkrecipe, pork_frame[,5])
+    
+    if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
+      
+
       pork_frame[x,4]
     }
     
-    
   })
+  
+
   
   
   
