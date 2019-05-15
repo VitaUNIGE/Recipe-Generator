@@ -91,7 +91,7 @@ for(i in 1:length(titles_indices5)){
   pork_frame[i,3] = calories[i]
   pork_frame[i,4] = cooking_time[i]
   pork_frame[i,5] = titles[i]
-  
+  colnames(pork_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
 
@@ -165,11 +165,12 @@ ui = fluidPage(
   
   titlePanel("Recipe Generator"),
   
-  sidebarPanel(
     
-    selectInput("ingredients_", "Ingredient",
-                vec_ing
-    ),
+    sidebarPanel(
+      checkboxGroupInput("ingredients_", label = h3("Ingredient"), 
+                         choices = vec_ing),
+      selected = "Salmon"),
+  
     
     conditionalPanel(
       condition = "input.ingredients_ == 'Chicken'",
@@ -177,8 +178,6 @@ ui = fluidPage(
         "chickenrecipe", "Chicken Recipes", 
         choices = chicken_r
       )
-      
-      
     ),
     conditionalPanel(
       condition = "input.ingredients_ == 'Salmon'",
@@ -195,10 +194,11 @@ ui = fluidPage(
     conditionalPanel(
       condition = "input.ingredients_ == 'Pork'",
       selectInput("porkrecipe", "Pork Recipes", choices = pork_frame[,5])
-    )
     
-    
-  ),
+      
+      
+      ),
+  
   mainPanel(
     verbatimTextOutput("chickenrecipe"),
     verbatimTextOutput("salmonrecipe"),
@@ -209,7 +209,6 @@ ui = fluidPage(
     verbatimTextOutput("porkrecipe_c"),
     verbatimTextOutput("porkrecipe_t")
   )
-  
 )
 
 
