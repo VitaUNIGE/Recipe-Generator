@@ -7,7 +7,7 @@ library(rebus)
 
 # Loading urls for all recipe pages. Urls is initialized as empty vector to prevent repeated entries across runs
 urls <- c()
-for (t in 1:2) {
+for (t in 1:4) {
   webpage_recipes <-read_html(paste0("https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=", t))
   urlst <-html_nodes (webpage_recipes, ".fixed-recipe-card__h3 a") %>%
     html_attr("href")
@@ -88,8 +88,13 @@ ing_indices11 = grep("Rice", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices12 = grep("Bread", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices13 = grep("Onion", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices14 = grep("Potato", Recipe_dataframe$Ingredients, ignore.case = TRUE)
+ing_indices15 = grep("Tomato", Recipe_dataframe$Ingredients, ignore.case = TRUE)
+ing_indices16 = grep("Orange", Recipe_dataframe$Ingredients, ignore.case = TRUE)
+ing_indices17 = grep("Apple", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 
-#Reorganizing all data relating to specific ingredients into matrices
+
+#Reorganizing all data relating to specific ingredients into matrices, more specifically the recipes,
+#the complete list of ingredients related to them, the calories, the cooking time and the titles of recipes
 chicken_frame = matrix(ncol = 5, nrow = length(ing_indices1))
 for(i in 1:length(ing_indices1)){
   
@@ -242,7 +247,41 @@ for(i in 1:length(ing_indices14)){
   colnames(potato_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
-vec_ing = c("Egg", "Milk", "Cheese","Pasta", "Rice", "Bread", "Chicken", "Pork", "Beef", "Salmon", "Shrimp", "Turkey", "Onion", "Potato")
+tomato_frame = matrix(ncol = 5, nrow = length(ing_indices15))
+for(i in 1:length(ing_indices15)){
+  
+  tomato_frame[,1] = ingredients [grep("Tomato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  tomato_frame[,2] =  recipes [grep("Tomato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  tomato_frame[,3] =  calories [grep("Tomato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  tomato_frame[,4] =  cooking_time [grep("Tomato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  tomato_frame[,5] =  titles [grep("Tomato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(tomato_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+
+orange_frame = matrix(ncol = 5, nrow = length(ing_indices16))
+for(i in 1:length(ing_indices16)){
+  
+  orange_frame[,1] = ingredients [grep("Orange", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  orange_frame[,2] =  recipes [grep("Orange", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  orange_frame[,3] =  calories [grep("Orange", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  orange_frame[,4] =  cooking_time [grep("Orange", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  orange_frame[,5] =  titles [grep("Orange", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(orange_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+apple_frame = matrix(ncol = 5, nrow = length(ing_indices17))
+for(i in 1:length(ing_indices17)){
+  
+  apple_frame[,1] = ingredients [grep("Apple", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  apple_frame[,2] =  recipes [grep("Apple", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  apple_frame[,3] =  calories [grep("Apple", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  apple_frame[,4] =  cooking_time [grep("Apple", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  apple_frame[,5] =  titles [grep("Apple", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(apple_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+
+
+#Putting all the ingredients into a vector for easy display in the app
+vec_ing = c("Egg", "Milk", "Cheese","Pasta", "Rice", "Bread", "Chicken", "Pork", "Beef", "Salmon", "Shrimp", "Turkey", "Onion", "Potato", "Tomato", "Orange", "Apple")
 
 
 #CREATING THE APP
@@ -253,6 +292,7 @@ library(shiny)
 
 
 # Frontend
+#In this section the selection of ingredients is linked to a scroll down menu offering a choice of recipes referred to as choices
 
 ui = fluidPage(
   
@@ -334,6 +374,21 @@ ui = fluidPage(
     selectInput("potatorecipe", "Potato Recipes", choices = potato_frame[,5])
     
   ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Tomato'",
+    selectInput("tomatorecipe", "Tomato Recipes", choices = tomato_frame[,5])
+    
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Orange'",
+    selectInput("orangerecipe", "Orange Recipes", choices = orange_frame[,5])
+    
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Apple'",
+    selectInput("applerecipe", "Apple Recipes", choices = apple_frame[,5])
+    
+  ),
 
   mainPanel(
     verbatimTextOutput("chickenrecipe_r"),
@@ -404,7 +459,22 @@ ui = fluidPage(
     verbatimTextOutput("potatorecipe_r"),
     verbatimTextOutput("potatorecipe_i"),
     verbatimTextOutput("potatorecipe_c"),
-    verbatimTextOutput("potatorecipe_t")
+    verbatimTextOutput("potatorecipe_t"),
+    
+    verbatimTextOutput("tomatorecipe_r"),
+    verbatimTextOutput("tomatorecipe_i"),
+    verbatimTextOutput("tomatorecipe_c"),
+    verbatimTextOutput("tomatorecipe_t"),
+    
+    verbatimTextOutput("orangerecipe_r"),
+    verbatimTextOutput("orangerecipe_i"),
+    verbatimTextOutput("orangerecipe_c"),
+    verbatimTextOutput("orangerecipe_t"),
+    
+    verbatimTextOutput("applerecipe_r"),
+    verbatimTextOutput("applerecipe_i"),
+    verbatimTextOutput("applerecipe_c"),
+    verbatimTextOutput("applerecipe_t")
   )
 )
 
@@ -415,7 +485,7 @@ ui = fluidPage(
 
 
 # Server
-
+#This part of the code allows the app to output each ingredients parameter once the recipe is selected in the scroll down menu
 
 server = function(input, output){
   
@@ -1157,7 +1227,175 @@ server = function(input, output){
     }
     
   })
+  
+  
+  
+  output$tomatorecipe_r = renderPrint({
+    
+    
+    x = match(input$tomatorecipe, tomato_frame[,5])
+    
+    if(input$tomatorecipe == (tomato_frame[,5])[x] && input$ingredients_ == "Tomato"){
+      
+      tomato_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$tomatorecipe_i = renderPrint({
+    
+    
+    x = match(input$tomatorecipe, tomato_frame[,5])
+    
+    if(input$tomatorecipe == (tomato_frame[,5])[x] && input$ingredients_ == "Tomato"){
+      
+      tomato_frame[x,1]
+      
+      
+      
+    }
+    
+  })
+  
+  output$tomatorecipe_c = renderPrint({
+    
+    
+    x = match(input$tomatorecipe, tomato_frame[,5])
+    
+    if(input$tomatorecipe == (tomato_frame[,5])[x] && input$ingredients_ == "Tomato"){
+      
+      tomato_frame[x,3]
+      
+      
+    }
+    
+  })
+  
+  output$tomatorecipe_t = renderPrint({
+    
+    
+    x = match(input$tomatorecipe, tomato_frame[,5])
+    
+    if(input$tomatorecipe == (tomato_frame[,5])[x] && input$ingredients_ == "Tomato"){
+      
+      tomato_frame[x,4]
+      
+    }
+    
+  })
+  
+  output$orangerecipe_r = renderPrint({
+    
+    
+    x = match(input$orangerecipe, orange_frame[,5])
+    
+    if(input$orangerecipe == (orange_frame[,5])[x] && input$ingredients_ == "Orange"){
+      
+      orange_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$orangerecipe_i = renderPrint({
+    
+    
+    x = match(input$orangerecipe, orange_frame[,5])
+    
+    if(input$orangerecipe == (orange_frame[,5])[x] && input$ingredients_ == "Orange"){
+      
+      orange_frame[x,1]
+      
+      
+      
+    }
+    
+  })
+  
+  output$orangerecipe_c = renderPrint({
+    
+    
+    x = match(input$orangerecipe, orange_frame[,5])
+    
+    if(input$orangerecipe == (orange_frame[,5])[x] && input$ingredients_ == "Orange"){
+      
+      orange_frame[x,3]
+      
+      
+    }
+    
+  })
+  
+  output$orangerecipe_t = renderPrint({
+    
+    
+    x = match(input$orangerecipe, orange_frame[,5])
+    
+    if(input$orangerecipe == (orange_frame[,5])[x] && input$ingredients_ == "Orange"){
+      
+      orange_frame[x,4]
+      
+    }
+    
+  })
+  
+  output$applerecipe_r = renderPrint({
+    
+    
+    x = match(input$applerecipe, apple_frame[,5])
+    
+    if(input$applerecipe == (apple_frame[,5])[x] && input$ingredients_ == "Apple"){
+      
+      apple_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$applerecipe_i = renderPrint({
+    
+    
+    xx = match(input$applerecipe, apple_frame[,5])
+    
+    if(input$applerecipe == (apple_frame[,5])[x] && input$ingredients_ == "Apple"){
+      
+      apple_frame[x,1]
+      
+      
+      
+    }
+    
+  })
+  
+  output$applerecipe_c = renderPrint({
+    
+    
+    x = match(input$applerecipe, apple_frame[,5])
+    
+    if(input$applerecipe == (apple_frame[,5])[x] && input$ingredients_ == "Apple"){
+      
+      apple_frame[x,3]
+      
+      
+    }
+    
+  })
+  
+  output$applerecipe_t = renderPrint({
+    
+    
+    x = match(input$applerecipe, apple_frame[,5])
+    
+    if(input$applerecipe == (apple_frame[,5])[x] && input$ingredients_ == "Apple"){
+      
+      apple_frame[x,4]
+      
+    }
+    
+  })
 }
 
+#Finally, this runs the app:
 shinyApp(ui = ui, server = server)
 
