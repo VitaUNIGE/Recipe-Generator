@@ -74,26 +74,35 @@ Recipe_dataframe$Calories <-calories
 Recipe_dataframe$cooking_time <- cooking_time
 
 #Extracting titles based on keywords  
-titles_indices1 = grep("Chicken", titles, ignore.case = TRUE)
+ing_indices1 = grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
 titles_indices3 = grep("Tuna", titles, ignore.case = TRUE)
 titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
-titles_indices5 = grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)
+ing_indices5 = grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 
 #Reorganizing all data relating to specific ingredient into a matrix
-pork_frame = matrix(ncol = 5, nrow = length(titles_indices5))
-for(i in 1:length(titles_indices5)){
-        
-  pork_frame[,1] = ingredients [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[,2] =  recipes [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[,3] =  calories [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[,4] =  cooking_time [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[,5] =  titles [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  colnames(pork_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+chicken_frame = matrix(ncol = 5, nrow = length(ing_indices1))
+for(i in 1:length(ing_indices1)){
+  
+  chicken_frame[,1] = ingredients [grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  chicken_frame[,2] =  recipes [grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  chicken_frame[,3] =  calories [grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  chicken_frame[,4] =  cooking_time [grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  chicken_frame[,5] =  titles [grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(chicken_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
 
-
+pork_frame = matrix(ncol = 5, nrow = length(ing_indices5))
+for(i in 1:length(ing_indices5)){
+  
+  pork_frame[,1] = ingredients [grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  pork_frame[,2] =  recipes [grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  pork_frame[,3] =  calories [grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  pork_frame[,4] =  cooking_time [grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  pork_frame[,5] =  titles [grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(pork_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
 
 #Creating vectors
 chicken_r = c()
@@ -164,45 +173,43 @@ ui = fluidPage(
   
   titlePanel("Recipe Generator"),
   
-    
-    sidebarPanel(
-      checkboxGroupInput("ingredients_", label = h3("Ingredient"), 
-                         choices = vec_ing),
-      selected = "Salmon"),
   
+  sidebarPanel(
+    checkboxGroupInput("ingredients_", label = h3("Ingredient"), 
+                       choices = vec_ing),
+    selected = "Salmon"),
+  
+  
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Chicken'",
+    selectInput("chickenrecipe", "Chicken Recipes", choices = chicken_frame[,5]
+    )
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Salmon'",
+    selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_r)
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Tuna'",
+    selectInput("thunarecipe", "Tuna Recipes", choices = thuna_r)
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Shrimp'",
+    selectInput("shrimprecipe", "Shrimp Recipes", choices = shrimp_r)
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Pork'",
+    selectInput("porkrecipe", "Pork Recipes", choices = pork_frame[,5])
     
-    conditionalPanel(
-      condition = "input.ingredients_ == 'Chicken'",
-      selectInput(
-        "chickenrecipe", "Chicken Recipes", 
-        choices = chicken_r
-      )
-    ),
-    conditionalPanel(
-      condition = "input.ingredients_ == 'Salmon'",
-      selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_r)
-    ),
-    conditionalPanel(
-      condition = "input.ingredients_ == 'Tuna'",
-      selectInput("thunarecipe", "Tuna Recipes", choices = thuna_r)
-    ),
-    conditionalPanel(
-      condition = "input.ingredients_ == 'Shrimp'",
-      selectInput("shrimprecipe", "Shrimp Recipes", choices = shrimp_r)
-    ),
-    conditionalPanel(
-      condition = "input.ingredients_ == 'Pork'",
-      selectInput("porkrecipe", "Pork Recipes", choices = pork_frame[,5])
     
-      
-      
-      ),
+    
+  ),
   
   mainPanel(
-    verbatimTextOutput("chickenrecipe"),
-    verbatimTextOutput("salmonrecipe"),
-    verbatimTextOutput("tunarecipe"),
-    verbatimTextOutput("shrimprecipe"),
+    verbatimTextOutput("chickenrecipe_r"),
+    verbatimTextOutput("chickenrecipe_i"),
+    verbatimTextOutput("chickenrecipe_c"),
+    verbatimTextOutput("chickenrecipe_t"),
     verbatimTextOutput("porkrecipe_r"),
     verbatimTextOutput("porkrecipe_i"),
     verbatimTextOutput("porkrecipe_c"),
@@ -222,16 +229,54 @@ ui = fluidPage(
 server = function(input, output){
   
   
-  
-  
-  output$chickenrecipe = renderText({
+  output$chickenrecipe_r = renderPrint({
     
     
-    x = match(input$chickenrecipe, chicken_r)
+    x = match(input$chickenrecipe, chicken_frame[,5])
     
-    if(input$chickenrecipe == chicken_r[x] && input$ingredients_ == "Chicken"){
+    if(input$chickenrecipe == (chicken_frame[,5])[x] && input$ingredients_ == "Chicken"){
       
-      chicken_recipe[x]
+      chicken_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$chickenrecipe_i = renderPrint({
+    
+    
+    x = match(input$chickenrecipe, chicken_frame[,5])
+    
+    if(input$chickenrecipe == (chicken_frame[,5])[x] && input$ingredients_ == "Chicken"){
+      
+      chicken_frame[x,1]
+      
+    }
+    
+  })
+  
+  output$chickenrecipe_c = renderPrint({
+    
+    
+    x = match(input$chickenrecipe, chicken_frame[,5])
+    
+    if(input$chickenrecipe == (chicken_frame[,5])[x] && input$ingredients_ == "Chicken"){
+      
+      chicken_frame[x,3]
+      
+    
+    }
+    
+  })
+  
+  output$chickenrecipe_t = renderPrint({
+    
+    
+    x = match(input$chickenrecipe, chicken_frame[,5])
+    
+    if(input$chickenrecipe == (chicken_frame[,5])[x] && input$ingredients_ == "Chicken"){
+      
+      chicken_frame[x,4]
       
     }
     
@@ -239,57 +284,6 @@ server = function(input, output){
   
   
   
-  
-  
-  
-  output$salmonrecipe = renderText({
-    
-    
-    x = match(input$salmonrecipe, salmon_r)
-    
-    if(input$salmonrecipe == salmon_r[x] && input$ingredients_ == "Salmon"){
-      
-      salmon_recipe[x]
-    
-    }
-    
-  })
-  
-  
-  
-  
-  
-  
-  output$thunarecipe = renderText({
-    
-    if(is.na(tuna_r) == FALSE && input$ingredients_ == "Tuna"){
-      
-      x = match(input$thunarecipe, tuna_r)
-      
-      if(input$tunarecipe == tuna_r[x] && input$ingredients_ == "Tuna"){
-        
-        tuna_recipe[x]
-      }
-    } 
-    
-  })
-  
-  
-  
-  
-  
-  
-  output$shrimprecipe = renderText({
-    
-    
-    x = match(input$shrimprecipe, shrimp_r)
-    
-    if(input$shrimprecipe == shrimp_r[x] && input$ingredients_ == "Shrimp"){
-      
-      shrimp_recipe[x]
-    }
-    
-  })
   
   output$porkrecipe_r = renderPrint({
     
@@ -299,7 +293,7 @@ server = function(input, output){
     if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
       
       pork_frame[x,2]
-
+      
     }
     
     
@@ -312,7 +306,7 @@ server = function(input, output){
     if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
       
       pork_frame[x,1]
-
+      
     }
     
   })
@@ -324,7 +318,7 @@ server = function(input, output){
     
     if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
       
- 
+      
       pork_frame[x,3]
     }
     
@@ -337,19 +331,16 @@ server = function(input, output){
     
     if(input$porkrecipe == (pork_frame[,5])[x] && input$ingredients_ == "Pork"){
       
-
+      
       pork_frame[x,4]
     }
     
   })
   
+  
+  
+  
 
-  
-  
-  
-  
-  
-  
   
 }
 
