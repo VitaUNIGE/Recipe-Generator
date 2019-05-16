@@ -5,9 +5,10 @@ library(stringr)
 library(rebus)     
 
 
-# Loading urls for all recipe pages. Urls is initialized as empty vector to prevent repeated entries across runs
+# Loading urls for all recipe pages. Urls is initialized as empty vector to prevent repeated entries across runs.
+# 3 pages have been selected here, but they can be increased up to 30 for a maximum amount of results
 urls <- c()
-for (t in 1:4) {
+for (t in 1:3) {
   webpage_recipes <-read_html(paste0("https://www.allrecipes.com/recipes/1947/everyday-cooking/quick-and-easy/?page=", t))
   urlst <-html_nodes (webpage_recipes, ".fixed-recipe-card__h3 a") %>%
     html_attr("href")
