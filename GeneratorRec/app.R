@@ -84,11 +84,11 @@ titles_indices5 = grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)
 pork_frame = matrix(ncol = 5, nrow = length(titles_indices5))
 for(i in 1:length(titles_indices5)){
         
-  pork_frame[i,1] = ingredients [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[i,2] =  recipes [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[i,3] =  calories [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[i,4] =  cooking_time [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
-  pork_frame[i,5] =  titles [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[,1] = ingredients [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[,2] =  recipes [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[,3] =  calories [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[,4] =  cooking_time [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[,5] =  titles [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
   colnames(pork_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
