@@ -104,56 +104,9 @@ for(i in 1:length(ing_indices5)){
   colnames(pork_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
-#Creating vectors
-chicken_r = c()
-salmon_r = c()
-tuna_r = c()
-shrimp_r = c()
-chicken_recipe = c()
-salmon_recipe = c()
-tuna_recipe = c()
-shrimp_recipe = c()
-salmon_cal = c()
-salmon_time = c()
+
 
 vec_ing = c("Chicken", "Salmon", "Tuna", "Shrimp", "Pork")
-
-#Inserting the information into the vectors (i.e titles into chicken_r and recipes into chicken_recipe for example)
-for (i in 1:length(titles_indices1)){
-  
-  chicken_r[i] = c(titles[titles_indices1[i]])
-  chicken_recipe[i] = c(recipes[titles_indices1[i]])
-  
-  
-  
-}
-
-for (i in 1:length(titles_indices2)){
-  
-  salmon_r[i] = c(titles[titles_indices2[i]])
-  salmon_recipe[i] = c(recipes[titles_indices2[i]])
-  salmon_cal[i] = c(calories[titles_indices2[i]])
-  salmon_time [i] = c(cooking_time[titles_indices2[i]])
-  
-}
-for (i in 1:length(titles_indices3)){
-  
-  tuna_r[i] = c(titles[titles_indices3[i]])
-  tuna_recipe[i] = c(recipes[titles_indices3[i]])
-  
-  
-  
-  
-}
-for (i in 1:length(titles_indices4)){
-  
-  shrimp_r[i] = c(titles[titles_indices4[i]])
-  shrimp_recipe[i] = c(recipes[titles_indices4[i]])
-  
-  
-  
-  
-}
 
 
 
