@@ -73,14 +73,14 @@ Recipe_dataframe$Ingredients <- ingredients
 Recipe_dataframe$Calories <-calories
 Recipe_dataframe$cooking_time <- cooking_time
 
-#Extracting titles based on keywords  
+#Extracting ingredients list based on keywords  
 ing_indices1 = grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)
-titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
-titles_indices3 = grep("Tuna", titles, ignore.case = TRUE)
+ing_indices2 = grep("Salmon", Recipe_dataframe$Ingredients, ignore.case = TRUE) 
+ing_indices3 = grep("Milk", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
 ing_indices5 = grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 
-#Reorganizing all data relating to specific ingredient into a matrix
+#Reorganizing all data relating to specific ingredients into matrices
 chicken_frame = matrix(ncol = 5, nrow = length(ing_indices1))
 for(i in 1:length(ing_indices1)){
   
@@ -90,6 +90,28 @@ for(i in 1:length(ing_indices1)){
   chicken_frame[,4] =  cooking_time [grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
   chicken_frame[,5] =  titles [grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
   colnames(chicken_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+
+salmon_frame = matrix(ncol = 5, nrow = length(ing_indices2))
+for(i in 1:length(ing_indices2)){
+  
+  salmon_frame[,1] = ingredients [grep("Salmon", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  salmon_frame[,2] =  recipes [grep("Salmon", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  salmon_frame[,3] =  calories [grep("Salmon", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  salmon_frame[,4] =  cooking_time [grep("Salmon", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  salmon_frame[,5] =  titles [grep("Salmon", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(salmon_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+
+milk_frame = matrix(ncol = 5, nrow = length(ing_indices3))
+for(i in 1:length(ing_indices3)){
+  
+  milk_frame[,1] = ingredients [grep("Milk", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  milk_frame[,2] =  recipes [grep("Milk", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  milk_frame[,3] =  calories [grep("Milk", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  milk_frame[,4] =  cooking_time [grep("Milk", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  milk_frame[,5] =  titles [grep("Milk", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(milk_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
 
@@ -107,9 +129,6 @@ for(i in 1:length(ing_indices5)){
 
 
 vec_ing = c("Chicken", "Salmon", "Tuna", "Shrimp", "Pork")
-
-
-
 
 
 #CREATING THE APP
@@ -140,7 +159,7 @@ ui = fluidPage(
   ),
   conditionalPanel(
     condition = "input.ingredients_ == 'Salmon'",
-    selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_r)
+    selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_frame[,5])
   ),
   conditionalPanel(
     condition = "input.ingredients_ == 'Tuna'",
@@ -163,6 +182,12 @@ ui = fluidPage(
     verbatimTextOutput("chickenrecipe_i"),
     verbatimTextOutput("chickenrecipe_c"),
     verbatimTextOutput("chickenrecipe_t"),
+    
+    verbatimTextOutput("salmonrecipe_r"),
+    verbatimTextOutput("salmonrecipe_i"),
+    verbatimTextOutput("salmonrecipe_c"),
+    verbatimTextOutput("salmonrecipe_t"),
+    
     verbatimTextOutput("porkrecipe_r"),
     verbatimTextOutput("porkrecipe_i"),
     verbatimTextOutput("porkrecipe_c"),
@@ -182,19 +207,6 @@ ui = fluidPage(
 server = function(input, output){
   
   
-  output$chickenrecipe_r = renderPrint({
-    
-    
-    x = match(input$chickenrecipe, chicken_frame[,5])
-    
-    if(input$chickenrecipe == (chicken_frame[,5])[x] && input$ingredients_ == "Chicken"){
-      
-      chicken_frame[x,2]
-      
-    }
-    
-    
-  })
   output$chickenrecipe_i = renderPrint({
     
     
@@ -203,6 +215,19 @@ server = function(input, output){
     if(input$chickenrecipe == (chicken_frame[,5])[x] && input$ingredients_ == "Chicken"){
       
       chicken_frame[x,1]
+      
+    }
+    
+    
+  })
+  output$chickenrecipe_r = renderPrint({
+    
+    
+    x = match(input$chickenrecipe, chicken_frame[,5])
+    
+    if(input$chickenrecipe == (chicken_frame[,5])[x] && input$ingredients_ == "Chicken"){
+      
+      chicken_frame[x,2]
       
     }
     
@@ -234,6 +259,59 @@ server = function(input, output){
     }
     
   })
+  
+  
+  
+  output$salmonrecipe_r = renderPrint({
+    
+    
+    x = match(input$salmonrecipe, salmon_frame[,5])
+    
+    if(input$salmonrecipe == (salmon_frame[,5])[x] && input$ingredients_ == "Salmon"){
+      
+      salmon_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$salmonrecipe_i = renderPrint({
+    
+    
+    x = match(input$salmonrecipe, salmon_frame[,5])
+    
+    if(input$salmonrecipe == (salmon_frame[,5])[x] && input$ingredients_ == "Salmon"){
+      
+      salmon_frame[x,1]
+      
+    }
+    
+  })
+  
+  output$salmonrecipe_c = renderPrint({
+    
+    
+    x = match(input$salmonrecipe, salmon_frame[,5])
+    
+    if(input$salmonrecipe == (salmon_frame[,5])[x] && input$ingredients_ == "Salmon"){
+      
+      salmon_frame[x,3]
+    }
+    
+  })
+  
+  output$salmonrecipe_t = renderPrint({
+    
+    
+    x = match(input$salmonrecipe, salmon_frame[,5])
+    
+    if(input$salmonrecipe == (salmon_frame[,5])[x] && input$ingredients_ == "Salmon"){
+      
+      salmon_frame[x,4]
+    }
+    
+  })
+  
   
   
   
