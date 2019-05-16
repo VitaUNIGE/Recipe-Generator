@@ -87,6 +87,7 @@ ing_indices10 = grep("Pasta", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices11 = grep("Rice", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices12 = grep("Bread", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices13 = grep("Onion", Recipe_dataframe$Ingredients, ignore.case = TRUE)
+ing_indices14 = grep("Potato", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 
 #Reorganizing all data relating to specific ingredients into matrices
 chicken_frame = matrix(ncol = 5, nrow = length(ing_indices1))
@@ -230,7 +231,18 @@ for(i in 1:length(ing_indices13)){
   colnames(onion_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
-vec_ing = c("Egg", "Milk", "Cheese","Pasta", "Rice", "Bread", "Chicken", "Pork", "Beef", "Salmon", "Shrimp", "Turkey", "Onion")
+potato_frame = matrix(ncol = 5, nrow = length(ing_indices14))
+for(i in 1:length(ing_indices14)){
+  
+  potato_frame[,1] = ingredients [grep("Potato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  potato_frame[,2] =  recipes [grep("Potato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  potato_frame[,3] =  calories [grep("Potato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  potato_frame[,4] =  cooking_time [grep("Potato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  potato_frame[,5] =  titles [grep("Potato", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(potato_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+
+vec_ing = c("Egg", "Milk", "Cheese","Pasta", "Rice", "Bread", "Chicken", "Pork", "Beef", "Salmon", "Shrimp", "Turkey", "Onion", "Potato")
 
 
 #CREATING THE APP
@@ -312,7 +324,17 @@ ui = fluidPage(
     selectInput("breadrecipe", "Bread Recipes", choices = bread_frame[,5])
     
   ),
-  
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Onion'",
+    selectInput("onionrecipe", "Onion Recipes", choices = onion_frame[,5])
+    
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Potato'",
+    selectInput("potatorecipe", "Potato Recipes", choices = potato_frame[,5])
+    
+  ),
+
   mainPanel(
     verbatimTextOutput("chickenrecipe_r"),
     verbatimTextOutput("chickenrecipe_i"),
@@ -372,7 +394,17 @@ ui = fluidPage(
     verbatimTextOutput("breadrecipe_r"),
     verbatimTextOutput("breadrecipe_i"),
     verbatimTextOutput("breadrecipe_c"),
-    verbatimTextOutput("breadrecipe_t")
+    verbatimTextOutput("breadrecipe_t"),
+    
+    verbatimTextOutput("onionrecipe_r"),
+    verbatimTextOutput("onionrecipe_i"),
+    verbatimTextOutput("onionrecipe_c"),
+    verbatimTextOutput("onionrecipe_t"),
+    
+    verbatimTextOutput("potatorecipe_r"),
+    verbatimTextOutput("potatorecipe_i"),
+    verbatimTextOutput("potatorecipe_c"),
+    verbatimTextOutput("potatorecipe_t")
   )
 )
 
@@ -1011,6 +1043,117 @@ server = function(input, output){
     if(input$breadrecipe == (bread_frame[,5])[x] && input$ingredients_ == "Bread"){
       
       bread_frame[x,4]
+    }
+    
+  })
+  
+  
+  
+  output$onionrecipe_r = renderPrint({
+    
+    
+    x = match(input$onionrecipe, onion_frame[,5])
+    
+    if(input$onionrecipe == (onion_frame[,5])[x] && input$ingredients_ == "Onion"){
+      
+      onion_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$onionrecipe_i = renderPrint({
+    
+    
+    x = match(input$onionrecipe, onion_frame[,5])
+    
+    if(input$onionrecipe == (onion_frame[,5])[x] && input$ingredients_ == "Onion"){
+      
+      onion_frame[x,1]
+      
+      
+    }
+    
+  })
+  
+  output$onionrecipe_c = renderPrint({
+    
+    
+    x = match(input$onionrecipe, onion_frame[,5])
+    
+    if(input$onionrecipe == (onion_frame[,5])[x] && input$ingredients_ == "Onion"){
+      
+      onion_frame[x,3]
+      
+    }
+    
+  })
+  
+  output$onionrecipe_t = renderPrint({
+    
+    
+    x = match(input$onionrecipe, onion_frame[,5])
+    
+    if(input$onionrecipe == (onion_frame[,5])[x] && input$ingredients_ == "Onion"){
+      
+      onion_frame[x,4]
+      
+    }
+    
+  })
+  
+  
+  output$potatorecipe_r = renderPrint({
+    
+    
+    x = match(input$potatorecipe, potato_frame[,5])
+    
+    if(input$potatorecipe == (potato_frame[,5])[x] && input$ingredients_ == "Potato"){
+      
+      potato_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$potatorecipe_i = renderPrint({
+    
+    
+    x = match(input$potatorecipe, potato_frame[,5])
+    
+    if(input$potatorecipe == (potato_frame[,5])[x] && input$ingredients_ == "Potato"){
+      
+      potato_frame[x,1]
+      
+      
+      
+    }
+    
+  })
+  
+  output$potatorecipe_c = renderPrint({
+    
+    
+    x = match(input$potatorecipe, potato_frame[,5])
+    
+    if(input$potatorecipe == (potato_frame[,5])[x] && input$ingredients_ == "Potato"){
+      
+      potato_frame[x,3]
+      
+      
+    }
+    
+  })
+  
+  output$potatorecipe_t = renderPrint({
+    
+    
+    x = match(input$potatorecipe, potato_frame[,5])
+    
+    if(input$potatorecipe == (potato_frame[,5])[x] && input$ingredients_ == "Potato"){
+      
+      potato_frame[x,4]
+      
     }
     
   })
