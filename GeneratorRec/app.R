@@ -81,6 +81,8 @@ ing_indices4 = grep("Shrimp", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices5 = grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices6 = grep("Cheese", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices7 = grep("Egg", Recipe_dataframe$Ingredients, ignore.case = TRUE)
+ing_indices8 = grep("Beef", Recipe_dataframe$Ingredients, ignore.case = TRUE)
+ing_indices9 = grep("Turkey", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 
 #Reorganizing all data relating to specific ingredients into matrices
 chicken_frame = matrix(ncol = 5, nrow = length(ing_indices1))
@@ -161,8 +163,29 @@ for(i in 1:length(ing_indices7)){
   colnames(egg_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
+beef_frame = matrix(ncol = 5, nrow = length(ing_indices8))
+for(i in 1:length(ing_indices8)){
+  
+  beef_frame[,1] = ingredients [grep("Beef", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  beef_frame[,2] =  recipes [grep("Beef", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  beef_frame[,3] =  calories [grep("Beef", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  beef_frame[,4] =  cooking_time [grep("Beef", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  beef_frame[,5] =  titles [grep("Beef", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(beef_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
 
-vec_ing = c("Chicken", "Salmon", "Milk", "Shrimp", "Pork", "Cheese", "Egg")
+turkey_frame = matrix(ncol = 5, nrow = length(ing_indices9))
+for(i in 1:length(ing_indices9)){
+  
+  turkey_frame[,1] = ingredients [grep("Turkey", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  turkey_frame[,2] =  recipes [grep("Turkey", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  turkey_frame[,3] =  calories [grep("Turkey", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  turkey_frame[,4] =  cooking_time [grep("Turkey", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  turkey_frame[,5] =  titles [grep("Turkey", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(turkey_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+
+vec_ing = c("Egg", "Milk", "Cheese", "Chicken", "Pork", "Beef", "Salmon", "Shrimp", "Turkey", "Duck")
 
 
 #CREATING THE APP
@@ -219,7 +242,16 @@ ui = fluidPage(
     selectInput("eggrecipe", "Egg Recipes", choices = egg_frame[,5])
     
   ),
-  
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Beef'",
+    selectInput("beefrecipe", "Beef Recipes", choices = beef_frame[,5])
+    
+  ),
+  conditionalPanel(
+    condition = "input.ingredients_ == 'Turkey'",
+    selectInput("turkeyrecipe", "Turkey Recipes", choices = turkey_frame[,5])
+    
+  ),
   
   mainPanel(
     verbatimTextOutput("chickenrecipe_r"),
@@ -255,7 +287,17 @@ ui = fluidPage(
     verbatimTextOutput("eggrecipe_r"),
     verbatimTextOutput("eggrecipe_i"),
     verbatimTextOutput("eggrecipe_c"),
-    verbatimTextOutput("eggrecipe_t")
+    verbatimTextOutput("eggrecipe_t"),
+    
+    verbatimTextOutput("beefrecipe_r"),
+    verbatimTextOutput("beefrecipe_i"),
+    verbatimTextOutput("beefrecipe_c"),
+    verbatimTextOutput("beefrecipe_t"),
+    
+    verbatimTextOutput("turkeyrecipe_r"),
+    verbatimTextOutput("turkeyrecipe_i"),
+    verbatimTextOutput("turkeyrecipe_c"),
+    verbatimTextOutput("turkeyrecipe_t")
   )
 )
 
@@ -641,6 +683,109 @@ server = function(input, output){
     
   }) 
 
+  
+  output$beefrecipe_r = renderPrint({
+    
+    
+    x = match(input$beefrecipe, beef_frame[,5])
+    
+    if(input$beefrecipe == (beef_frame[,5])[x] && input$ingredients_ == "Beef"){
+      
+      beef_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$beefrecipe_i = renderPrint({
+    
+    
+    x = match(input$beefrecipe, beef_frame[,5])
+    
+    if(input$beefrecipe == (beef_frame[,5])[x] && input$ingredients_ == "Beef"){
+      
+      beef_frame[x,1]
+      
+    }
+    
+  })
+  
+  output$beefrecipe_c = renderPrint({
+    
+    
+    x = match(input$beefrecipe, beef_frame[,5])
+    
+    if(input$beefrecipe == (beef_frame[,5])[x] && input$ingredients_ == "Beef"){
+      
+      beef_frame[x,3]
+    }
+    
+  })
+  
+  output$beefrecipe_t = renderPrint({
+    
+    
+    x = match(input$beefrecipe, beef_frame[,5])
+    
+    if(input$beefrecipe == (beef_frame[,5])[x] && input$ingredients_ == "Beef"){
+      
+      beef_frame[x,4]
+    }
+    
+  }) 
+  
+  
+  
+  
+  output$turkeyrecipe_r = renderPrint({
+    
+    
+    x = match(input$turkeyrecipe, beef_frame[,5])
+    
+    if(input$turkeyrecipe == (turkey_frame[,5])[x] && input$ingredients_ == "Turkey"){
+      
+      turkey_frame[x,2]
+      
+    }
+    
+    
+  })
+  output$turkeyrecipe_i = renderPrint({
+    
+    
+    x = match(input$turkeyrecipe, beef_frame[,5])
+    
+    if(input$turkeyrecipe == (turkey_frame[,5])[x] && input$ingredients_ == "Turkey"){
+      
+      turkey_frame[x,1]
+      
+    }
+    
+  })
+  
+  output$turkeyrecipe_c = renderPrint({
+    
+    
+    x = match(input$turkeyrecipe, beef_frame[,5])
+    
+    if(input$turkeyrecipe == (turkey_frame[,5])[x] && input$ingredients_ == "Turkey"){
+      
+      turkey_frame[x,3]
+    }
+    
+  })
+  
+  output$turkeyrecipe_t = renderPrint({
+    
+    
+    x = match(input$turkeyrecipe, beef_frame[,5])
+    
+    if(input$turkeyrecipe == (turkey_frame[,5])[x] && input$ingredients_ == "Turkey"){
+      
+      turkey_frame[x,4]
+    }
+    
+  }) 
   
 }
 
