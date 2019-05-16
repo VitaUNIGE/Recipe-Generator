@@ -77,7 +77,7 @@ Recipe_dataframe$cooking_time <- cooking_time
 ing_indices1 = grep("Chicken", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices2 = grep("Salmon", Recipe_dataframe$Ingredients, ignore.case = TRUE) 
 ing_indices3 = grep("Milk", Recipe_dataframe$Ingredients, ignore.case = TRUE)
-titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
+ing_indices4 = grep("Shrimp", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 ing_indices5 = grep("Pork", Recipe_dataframe$Ingredients, ignore.case = TRUE)
 
 #Reorganizing all data relating to specific ingredients into matrices
@@ -114,6 +114,17 @@ for(i in 1:length(ing_indices3)){
   colnames(milk_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
 
+shrimp_frame = matrix(ncol = 5, nrow = length(ing_indices4))
+for(i in 1:length(ing_indices4)){
+  
+  shrimp_frame[,1] = ingredients [grep("Shrimp", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  shrimp_frame[,2] =  recipes [grep("Shrimp", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  shrimp_frame[,3] =  calories [grep("Shrimp", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  shrimp_frame[,4] =  cooking_time [grep("Shrimp", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  shrimp_frame[,5] =  titles [grep("Shrimp", Recipe_dataframe$Ingredients, ignore.case = TRUE)]
+  colnames(shrimp_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
+}
+
 
 pork_frame = matrix(ncol = 5, nrow = length(ing_indices5))
 for(i in 1:length(ing_indices5)){
@@ -128,7 +139,7 @@ for(i in 1:length(ing_indices5)){
 
 
 
-vec_ing = c("Chicken", "Salmon", "Tuna", "Shrimp", "Pork")
+vec_ing = c("Chicken", "Salmon", "Milk", "Shrimp", "Pork")
 
 
 #CREATING THE APP
@@ -162,12 +173,12 @@ ui = fluidPage(
     selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_frame[,5])
   ),
   conditionalPanel(
-    condition = "input.ingredients_ == 'Tuna'",
-    selectInput("thunarecipe", "Tuna Recipes", choices = thuna_r)
+    condition = "input.ingredients_ == 'Milk'",
+    selectInput("milkrecipe", "Milk Recipes", choices = milk_frame[,5])
   ),
   conditionalPanel(
     condition = "input.ingredients_ == 'Shrimp'",
-    selectInput("shrimprecipe", "Shrimp Recipes", choices = shrimp_r)
+    selectInput("shrimprecipe", "Shrimp Recipes", choices = shrimp_frame[,5])
   ),
   conditionalPanel(
     condition = "input.ingredients_ == 'Pork'",
@@ -188,6 +199,16 @@ ui = fluidPage(
     verbatimTextOutput("salmonrecipe_c"),
     verbatimTextOutput("salmonrecipe_t"),
     
+    verbatimTextOutput("milkrecipe_r"),
+    verbatimTextOutput("milkrecipe_i"),
+    verbatimTextOutput("milkrecipe_c"),
+    verbatimTextOutput("milkrecipe_t"),
+    
+    verbatimTextOutput("shrimprecipe_r"),
+    verbatimTextOutput("shrimprecipe_i"),
+    verbatimTextOutput("shrimprecipe_c"),
+    verbatimTextOutput("shrimprecipe_t"),
+    
     verbatimTextOutput("porkrecipe_r"),
     verbatimTextOutput("porkrecipe_i"),
     verbatimTextOutput("porkrecipe_c"),
@@ -206,6 +227,62 @@ ui = fluidPage(
 
 server = function(input, output){
   
+  
+  
+  output$milkrecipe_i = renderPrint({
+    
+    
+    x = match(input$milkrecipe, milk_frame[,5])
+    
+    if(input$milkrecipe == (milk_frame[,5])[x] && input$ingredients_ == "Milk"){
+      
+      milk_frame[x,1]
+      
+    }
+    
+    
+  })
+  output$milkrecipe_r = renderPrint({
+    
+    
+    x = match(input$milkrecipe, milk_frame[,5])
+    
+    if(input$milkrecipe == (milk_frame[,5])[x] && input$ingredients_ == "Milk"){
+      
+      milk_frame[x,2]
+      
+    }
+    
+  })
+  
+  output$milkrecipe_c = renderPrint({
+    
+    
+    x = match(input$milkrecipe, milk_frame[,5])
+    
+    if(input$milkrecipe == (milk_frame[,5])[x] && input$ingredients_ == "Milk"){
+      
+      milk_frame[x,3]
+      
+      
+    }
+    
+  })
+  
+  output$milkrecipe_t = renderPrint({
+    
+    
+    x = match(input$milkrecipe, milk_frame[,5])
+    
+    if(input$milkrecipe == (milk_frame[,5])[x] && input$ingredients_ == "Milk"){
+      
+      milk_frame[x,4]
+      
+    }
+    
+  })
+  
+
   
   output$chickenrecipe_i = renderPrint({
     
@@ -312,6 +389,57 @@ server = function(input, output){
     
   })
   
+  
+  
+  
+  output$shrimprecipe_i = renderPrint({
+    
+    
+    x = match(input$shrimprecipe, shrimp_frame[,5])
+    
+    if(input$shrimprecipe == (shrimp_frame[,5])[x] && input$ingredients_ == "Shrimp"){
+      
+      shrimp_frame[x,1]
+      
+    }
+    
+    
+  })
+  output$shrimprecipe_r = renderPrint({
+    
+    
+    x = match(input$shrimprecipe, shrimp_frame[,5])
+    
+    if(input$shrimprecipe == (shrimp_frame[,5])[x] && input$ingredients_ == "Shrimp"){
+      
+      shrimp_frame[x,2]
+      
+    }
+    
+  })
+  
+  output$shrimprecipe_c = renderPrint({
+    
+    
+    x = match(input$shrimprecipe, shrimp_frame[,5])
+    
+    if(input$shrimprecipe == (shrimp_frame[,5])[x] && input$ingredients_ == "Shrimp"){
+      
+      shrimp_frame[x,3]
+    }
+    
+  })
+  
+  output$shrimprecipe_t = renderPrint({
+    
+    x = match(input$shrimprecipe, shrimp_frame[,5])
+    
+    if(input$shrimprecipe == (shrimp_frame[,5])[x] && input$ingredients_ == "Shrimp"){
+      
+      shrimp_frame[x,4]
+    }
+    
+  })
   
   
   
