@@ -76,24 +76,21 @@ Recipe_dataframe$cooking_time <- cooking_time
 #Extracting titles based on keywords  
 titles_indices1 = grep("Chicken", titles, ignore.case = TRUE)
 titles_indices2 = grep("Salmon", titles, ignore.case = TRUE) 
-titles_indices3 = grep("Thuna", titles, ignore.case = TRUE)
+titles_indices3 = grep("Tuna", titles, ignore.case = TRUE)
 titles_indices4 = grep("Shrimp", titles, ignore.case = TRUE)
 titles_indices5 = grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)
 
 #Reorganizing all data relating to specific ingredient into a matrix
 pork_frame = matrix(ncol = 5, nrow = length(titles_indices5))
 for(i in 1:length(titles_indices5)){
-  
-  
-  
-  pork_frame[i,1] = ingredients[i]
-  pork_frame[i,2] = recipes[i]
-  pork_frame[i,3] = calories[i]
-  pork_frame[i,4] = cooking_time[i]
-  pork_frame[i,5] = titles[i]
+        
+  pork_frame[i,1] = ingredients [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[i,2] =  recipes [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[i,3] =  calories [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[i,4] =  cooking_time [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
+  pork_frame[i,5] =  titles [grep("Pork", Recipe_dataframe$Title, ignore.case = TRUE)]
   colnames(pork_frame) <-c ("Ingredidents", "Recipe", "calories", "Cooking Time", "Title")
 }
-
 
 
 
@@ -101,14 +98,16 @@ for(i in 1:length(titles_indices5)){
 #Creating vectors
 chicken_r = c()
 salmon_r = c()
-thuna_r = c()
+tuna_r = c()
 shrimp_r = c()
 chicken_recipe = c()
 salmon_recipe = c()
-thuna_recipe = c()
+tuna_recipe = c()
 shrimp_recipe = c()
+salmon_cal = c()
+salmon_time = c()
 
-vec_ing = c("Chicken", "Salmon", "Thuna", "Shrimp", "Pork")
+vec_ing = c("Chicken", "Salmon", "Tuna", "Shrimp", "Pork")
 
 #Inserting the information into the vectors (i.e titles into chicken_r and recipes into chicken_recipe for example)
 for (i in 1:length(titles_indices1)){
@@ -124,14 +123,14 @@ for (i in 1:length(titles_indices2)){
   
   salmon_r[i] = c(titles[titles_indices2[i]])
   salmon_recipe[i] = c(recipes[titles_indices2[i]])
-  
-  
+  salmon_cal[i] = c(calories[titles_indices2[i]])
+  salmon_time [i] = c(cooking_time[titles_indices2[i]])
   
 }
 for (i in 1:length(titles_indices3)){
   
-  thuna_r[i] = c(titles[titles_indices3[i]])
-  thuna_recipe[i] = c(recipes[titles_indices3[i]])
+  tuna_r[i] = c(titles[titles_indices3[i]])
+  tuna_recipe[i] = c(recipes[titles_indices3[i]])
   
   
   
@@ -184,8 +183,8 @@ ui = fluidPage(
       selectInput("salmonrecipe", "Salmon Recipes", choices = salmon_r)
     ),
     conditionalPanel(
-      condition = "input.ingredients_ == 'Thuna'",
-      selectInput("thunarecipe", "Thuna Recipes", choices = thuna_r)
+      condition = "input.ingredients_ == 'Tuna'",
+      selectInput("thunarecipe", "Tuna Recipes", choices = thuna_r)
     ),
     conditionalPanel(
       condition = "input.ingredients_ == 'Shrimp'",
@@ -202,7 +201,7 @@ ui = fluidPage(
   mainPanel(
     verbatimTextOutput("chickenrecipe"),
     verbatimTextOutput("salmonrecipe"),
-    verbatimTextOutput("thunarecipe"),
+    verbatimTextOutput("tunarecipe"),
     verbatimTextOutput("shrimprecipe"),
     verbatimTextOutput("porkrecipe_r"),
     verbatimTextOutput("porkrecipe_i"),
@@ -251,6 +250,7 @@ server = function(input, output){
     if(input$salmonrecipe == salmon_r[x] && input$ingredients_ == "Salmon"){
       
       salmon_recipe[x]
+    
     }
     
   })
@@ -262,13 +262,13 @@ server = function(input, output){
   
   output$thunarecipe = renderText({
     
-    if(is.na(thuna_r) == FALSE && input$ingredients_ == "Thuna"){
+    if(is.na(tuna_r) == FALSE && input$ingredients_ == "Tuna"){
       
-      x = match(input$thunarecipe, thuna_r)
+      x = match(input$thunarecipe, tuna_r)
       
-      if(input$thunarecipe == thuna_r[x] && input$ingredients_ == "Thuna"){
+      if(input$tunarecipe == tuna_r[x] && input$ingredients_ == "Tuna"){
         
-        thuna_recipe[x]
+        tuna_recipe[x]
       }
     } 
     
